@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -24,9 +25,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
+            buildConfigField("String", "KAKAO_API_KEY", "\"KakaoAK d1ec73cac012d686a068b03f19ed9d3d\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
+            buildConfigField("String", "KAKAO_API_KEY", "\"KakaoAK d1ec73cac012d686a068b03f19ed9d3d\"")
+
         }
     }
     compileOptions {
@@ -40,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -55,6 +65,12 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    // Retrofit & Network
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp.logging)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

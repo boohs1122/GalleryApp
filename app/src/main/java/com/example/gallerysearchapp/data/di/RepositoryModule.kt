@@ -1,7 +1,7 @@
 package com.example.gallerysearchapp.data.di;
 
-import com.example.gallerysearchapp.data.repository.ImageRepository
-import com.example.gallerysearchapp.data.repository.ImageRepositoryImpl
+import com.example.gallerysearchapp.data.repository.SearchRepository
+import com.example.gallerysearchapp.data.repository.SearchRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -15,6 +15,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindImageRepository(
-        imageRepositoryImpl: ImageRepositoryImpl,
-    ): ImageRepository
+        imageRepositoryImpl: SearchRepositoryImpl,
+    ): SearchRepository
 }
