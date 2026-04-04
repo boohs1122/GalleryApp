@@ -35,6 +35,4 @@ class SearchViewModel @Inject constructor(
                 }
         }
     }
-
-
 }

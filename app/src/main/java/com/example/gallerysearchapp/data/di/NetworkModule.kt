@@ -1,7 +1,7 @@
 package com.example.gallerysearchapp.data.di;
 
 import com.example.gallerysearchapp.BuildConfig
-import com.example.gallerysearchapp.data.service.SearchService
+import com.example.gallerysearchapp.data.api.SearchService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

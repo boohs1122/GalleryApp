@@ -1,4 +1,4 @@
-package com.example.gallerysearchapp.data.service
+package com.example.gallerysearchapp.data.api
 
 import com.example.gallerysearchapp.data.model.ImageResponse
 import com.example.gallerysearchapp.data.model.VideoResponse

@@ -5,13 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.example.gallerysearchapp.ui.components.GalleryNavHost
+import com.example.gallerysearchapp.ui.components.GalleryTopBar
 import com.example.gallerysearchapp.ui.theme.GallerySearchAppTheme
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,17 +25,31 @@ class MainActivity : ComponentActivity() {
 
     private val searchViewModel: SearchViewModel by viewModels()
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        searchViewModel.fetchData("flower")
 
         enableEdgeToEdge()
         setContent {
             GallerySearchAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                val navController = rememberNavController()
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = navBackStackEntry?.destination?.route
+
+                Scaffold(
+                    topBar = {
+                        GalleryTopBar(
+                            navController = navController,
+                            currentRoute = currentRoute,
+                            onSearch = { query ->
+                                searchViewModel.fetchData(query)
+                            }
+                        )
+                    }
+                ) { innerPadding ->
+                    GalleryNavHost(
+                        navController = navController,
+                        searchViewModel = searchViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -40,18 +58,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    GallerySearchAppTheme {
-        Greeting("Android")
-    }
+//    GallerySearchAppTheme {
+//        Greeting("Android")
+//    }
 }

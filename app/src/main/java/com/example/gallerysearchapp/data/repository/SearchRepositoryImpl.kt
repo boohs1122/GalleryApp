@@ -2,7 +2,7 @@ package com.example.gallerysearchapp.data.repository
 
 import com.example.gallerysearchapp.data.model.ImageDocument
 import com.example.gallerysearchapp.data.model.VideoDocument
-import com.example.gallerysearchapp.data.service.SearchService
+import com.example.gallerysearchapp.data.api.SearchService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
