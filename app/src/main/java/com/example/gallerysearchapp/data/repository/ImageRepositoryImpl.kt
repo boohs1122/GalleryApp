@@ -1,5 +1,10 @@
 package com.example.gallerysearchapp.data.repository
 
-class ImageRepositoryImpl : ImageRepository {
+import javax.inject.Inject
 
+class ImageRepositoryImpl @Inject constructor(): ImageRepository {
+
+    override fun getPhotos(): List<String> {
+        TODO("Not yet implemented")
+    }
 }
