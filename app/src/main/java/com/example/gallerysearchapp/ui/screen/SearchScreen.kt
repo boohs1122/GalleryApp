@@ -1,5 +1,6 @@
 package com.example.gallerysearchapp.ui.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,17 +9,31 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.gallerysearchapp.ui.model.ImageData
+import com.example.gallerysearchapp.ui.model.SearchType
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 
 @Composable
@@ -45,7 +60,7 @@ fun SearchScreen(
             items(pagedItems.itemCount) { index ->
                 val item = pagedItems[index]
                 if (item != null) {
-                    SearchResultItem(item = item.toString()) // 실제 객체에 맞게 수정
+                    SearchResultItem(item = item)
                 }
             }
 
@@ -66,14 +81,43 @@ fun SearchScreen(
 }
 
 @Composable
-fun SearchResultItem(item: String) {
+fun SearchResultItem(item: ImageData) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(1f) // 정사각형 비율
+            .aspectRatio(1f), // 1:1 정사각형 비율 (3열 그리드에 최적)
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-            Text(text = item)
+        Box(modifier = Modifier.fillMaxSize()) {
+            // 이미지 로딩
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(item.thumbnail)
+                    .crossfade(true) // 부드러운 전환 효과
+                    .build(),
+                contentDescription = item.title,
+                contentScale = ContentScale.Crop, // 영역에 꽉 차게 자르기
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // 비디오 타입인 경우 우측 상단이나 중앙에 아이콘 표시
+            if (item.type == SearchType.VIDEO) {
+                Icon(
+                    imageVector = Icons.Default.PlayCircle,
+                    contentDescription = item.title,
+                    tint = Color.White.copy(alpha = 0.9f), // 살짝 투명한 흰색
+                    modifier = Modifier
+                        .align(Alignment.TopEnd) // 우측 상단 배치
+                        .padding(8.dp)           // 여백
+                        .size(28.dp)             // 크기 조절
+                        .background(
+                            color = Color.Black.copy(alpha = 0.3f), // 아이콘 뒤에만 살짝 어두운 배경
+                            shape = CircleShape
+                        )
+                        .padding(2.dp)
+                )
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ data class ImageData(
     val url: String,
     val dateTime: String,
     val type: SearchType,
+    val title: String
 ) {
     companion object {
         fun from(imageDto: ImageDocument): ImageData {
@@ -15,7 +16,8 @@ data class ImageData(
                 thumbnail = imageDto.thumbnailUrl,
                 url = imageDto.imageUrl,
                 dateTime = imageDto.dateTime,
-                type = SearchType.IMAGE
+                type = SearchType.IMAGE,
+                title = imageDto.siteName
             )
         }
 
@@ -24,7 +26,8 @@ data class ImageData(
                 thumbnail = videoDto.thumbnailUrl,
                 url = videoDto.url,
                 dateTime = videoDto.dateTime,
-                type = SearchType.VIDEO
+                type = SearchType.VIDEO,
+                title = videoDto.title
             )
         }
     }
