@@ -1,12 +1,21 @@
 package com.example.gallerysearchapp.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.gallerysearchapp.MainActivity.Companion.PAGE_LOAD_LIMIT
 import com.example.gallerysearchapp.data.repository.SearchRepository
+import com.example.gallerysearchapp.ui.model.ImageData
+import com.example.gallerysearchapp.ui.screen.ImagePagingSource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -14,25 +23,23 @@ class SearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository,
 ) : ViewModel() {
 
-    fun fetchData(query: String) {
-        viewModelScope.launch {
-            searchRepository.searchImages(query)
-                .catch { e -> Log.e("SearchTest", "이미지 에러: ${e.message}") }
-                .collect { images ->
-                    Log.d("SearchTest", "이미지 검색 결과: ${images.size}개 가져옴")
-                    images.take(3).forEach { img ->
-                        Log.d("SearchTest", "이미지 URL: ${img.imageUrl}")
-                    }
-                }
+    private val _currentQuery = MutableStateFlow("")
 
-            searchRepository.searchVideos(query)
-                .catch { e -> Log.e("SearchTest", "동영상 에러: ${e.message}") }
-                .collect { videos ->
-                    Log.d("SearchTest", "동영상 검색 결과: ${videos.size}개 가져옴")
-                    videos.take(3).forEach { video ->
-                        Log.d("SearchTest", "동영상 제목: ${video.title}")
-                    }
-                }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val searchResults: Flow<PagingData<ImageData>> = _currentQuery
+        .filter { it.isNotBlank() }
+        .flatMapLatest { query ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = PAGE_LOAD_LIMIT,
+                    enablePlaceholders = false,
+                    initialLoadSize = PAGE_LOAD_LIMIT
+                ),
+                pagingSourceFactory = { ImagePagingSource(searchRepository, query) }
+            ).flow.cachedIn(viewModelScope)
         }
+
+    fun fetchData(query: String) {
+        _currentQuery.value = query
     }
 }

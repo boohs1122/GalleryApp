@@ -56,6 +56,10 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    companion object{
+        const val PAGE_LOAD_LIMIT = 30
+    }
 }
 
 @Preview(showBackground = true)
