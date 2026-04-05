@@ -15,11 +15,16 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -40,8 +46,8 @@ import com.example.gallerysearchapp.viewmodel.SearchViewModel
 fun SearchScreen(
     searchViewModel: SearchViewModel,
 ) {
-    // Paging 데이터를 collect합니다.
     val pagedItems = searchViewModel.searchResults.collectAsLazyPagingItems()
+    val bookmarkIds = searchViewModel.bookmarkIds.collectAsStateWithLifecycle().value
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -60,7 +66,13 @@ fun SearchScreen(
             items(pagedItems.itemCount) { index ->
                 val item = pagedItems[index]
                 if (item != null) {
-                    SearchResultItem(item = item)
+                    SearchResultItem(
+                        item = item,
+                        isBookmarked = bookmarkIds.contains(item.thumbnail),
+                        onBookmarkClick = {
+                            searchViewModel.toggleBookmark(item)
+                        }
+                    )
                 }
             }
 
@@ -81,7 +93,11 @@ fun SearchScreen(
 }
 
 @Composable
-fun SearchResultItem(item: ImageData) {
+fun SearchResultItem(
+    item: ImageData,
+    isBookmarked: Boolean,
+    onBookmarkClick: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,6 +117,22 @@ fun SearchResultItem(item: ImageData) {
                 modifier = Modifier.fillMaxSize()
             )
 
+            IconButton(
+                onClick = onBookmarkClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd) // 좌측 상단 배치
+                    .padding(4.dp)
+                    .size(32.dp)
+            ) {
+                Icon(
+                    imageVector = if (isBookmarked) Icons.Default.Favorite
+                    else Icons.Default.FavoriteBorder,
+                    contentDescription = "Bookmark",
+                    tint = if (isBookmarked) Color.Yellow else Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
+
             // 비디오 타입인 경우 우측 상단이나 중앙에 아이콘 표시
             if (item.type == SearchType.VIDEO) {
                 Icon(
@@ -108,13 +140,9 @@ fun SearchResultItem(item: ImageData) {
                     contentDescription = item.title,
                     tint = Color.White.copy(alpha = 0.9f), // 살짝 투명한 흰색
                     modifier = Modifier
-                        .align(Alignment.TopEnd) // 우측 상단 배치
-                        .padding(8.dp)           // 여백
+                        .align(Alignment.Center) // 우측 상단 배치
+//                        .padding(8.dp)           // 여백
                         .size(28.dp)             // 크기 조절
-                        .background(
-                            color = Color.Black.copy(alpha = 0.3f), // 아이콘 뒤에만 살짝 어두운 배경
-                            shape = CircleShape
-                        )
                         .padding(2.dp)
                 )
             }
