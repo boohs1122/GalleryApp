@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.gallerysearchapp.ui.components.GalleryNavHost
 import com.example.gallerysearchapp.ui.components.GalleryTopBar
 import com.example.gallerysearchapp.ui.theme.GallerySearchAppTheme
+import com.example.gallerysearchapp.viewmodel.BookmarkViewModel
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -24,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val searchViewModel: SearchViewModel by viewModels()
+    private val bookmarkViewModel: BookmarkViewModel by viewModels()
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +52,7 @@ class MainActivity : ComponentActivity() {
                     GalleryNavHost(
                         navController = navController,
                         searchViewModel = searchViewModel,
+                        bookmarkViewModel = bookmarkViewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

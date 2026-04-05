@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.gallerysearchapp.ui.screen.BookmarkScreen
 import com.example.gallerysearchapp.ui.screen.SearchScreen
+import com.example.gallerysearchapp.viewmodel.BookmarkViewModel
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
@@ -22,6 +23,7 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector)
 fun GalleryNavHost(
     navController: NavHostController,
     searchViewModel: SearchViewModel,
+    bookmarkViewModel: BookmarkViewModel,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -33,7 +35,7 @@ fun GalleryNavHost(
             SearchScreen(searchViewModel)
         }
         composable(Screen.Bookmark.route) {
-            BookmarkScreen()
+            BookmarkScreen(bookmarkViewModel)
         }
     }
 }
