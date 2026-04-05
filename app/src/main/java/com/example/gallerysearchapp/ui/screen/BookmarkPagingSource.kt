@@ -20,7 +20,7 @@ class BookmarkPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ImageData> {
         return try {
             val page = params.key ?: 0
-            val allBookmarks = preferenceStorage.getBookmarks()
+            val allBookmarks = preferenceStorage.bookmarks.value
 
             val fromIndex = page * params.loadSize
             val toIndex = minOf(fromIndex + params.loadSize, allBookmarks.size)

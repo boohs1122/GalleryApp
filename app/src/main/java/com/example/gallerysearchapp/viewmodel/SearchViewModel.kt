@@ -31,13 +31,12 @@ class SearchViewModel @Inject constructor(
 
     private val _currentQuery = MutableStateFlow("")
 
-    private val _bookmarkList = MutableStateFlow(preferenceStorage.getBookmarks())
-    val bookmarkIds: StateFlow<Set<String>> = _bookmarkList.map { list ->
+    val bookmarkIds: StateFlow<Set<String>> = preferenceStorage.bookmarks.map { list ->
         list.map { it.thumbnail }.toSet()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = emptySet()
+        initialValue = preferenceStorage.bookmarks.value.map { it.thumbnail }.toSet()
     )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -59,15 +58,13 @@ class SearchViewModel @Inject constructor(
     }
 
     fun toggleBookmark(item: ImageData) {
-        val currentList = _bookmarkList.value.toMutableList()
+        val currentList = preferenceStorage.bookmarks.value.toMutableList()
         val isBookmarked = currentList.any { it.thumbnail == item.thumbnail }
-
         if (isBookmarked) {
             currentList.removeAll { it.thumbnail == item.thumbnail }
         } else {
             currentList.add(item)
         }
         preferenceStorage.saveBookmarks(currentList)
-        _bookmarkList.value = currentList
     }
 }
