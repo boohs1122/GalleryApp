@@ -22,13 +22,11 @@ class BookmarkViewModel @Inject constructor(
     private val preferenceStorage: PreferenceStorage,
 ) : ViewModel() {
 
-    // 1. 실시간 하트 아이콘 반영을 위한 ID Set
     private val _bookmarkList = MutableStateFlow(preferenceStorage.getBookmarks())
     val bookmarkIds = _bookmarkList.map { list ->
         list.map { it.thumbnail }.toSet()
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
-    // 2. 페이징 데이터 Flow (30개씩 로드)
     private var currentPagingSource: BookmarkPagingSource? = null
 
     val bookmarkPagingData: Flow<PagingData<ImageData>> = Pager(
@@ -40,7 +38,6 @@ class BookmarkViewModel @Inject constructor(
         }
     ).flow.cachedIn(viewModelScope)
 
-    // 3. 북마크 해제 로직
     fun toggleBookmark(item: ImageData) {
         val currentList = preferenceStorage.getBookmarks().toMutableList()
         val isRemoved = currentList.removeAll { it.thumbnail == item.thumbnail }
@@ -48,7 +45,6 @@ class BookmarkViewModel @Inject constructor(
         if (isRemoved) {
             preferenceStorage.saveBookmarks(currentList)
             _bookmarkList.value = currentList
-            // 페이징 소스를 무효화하여 화면을 갱신시킴
             currentPagingSource?.invalidate()
         }
     }

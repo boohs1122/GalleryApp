@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -33,8 +32,6 @@ class SearchViewModel @Inject constructor(
     private val _currentQuery = MutableStateFlow("")
 
     private val _bookmarkList = MutableStateFlow(preferenceStorage.getBookmarks())
-    val bookmarkList: StateFlow<List<ImageData>> = _bookmarkList.asStateFlow()
-
     val bookmarkIds: StateFlow<Set<String>> = _bookmarkList.map { list ->
         list.map { it.thumbnail }.toSet()
     }.stateIn(

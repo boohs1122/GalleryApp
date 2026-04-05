@@ -53,7 +53,7 @@ fun GalleryTopBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                placeholder = { Text("이미지/비디오 검색") },
+                placeholder = { Text("이미지/비디오 검색어를 입력하세요.") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
                 singleLine = true,
                 shape = MaterialTheme.shapes.medium,

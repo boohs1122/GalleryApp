@@ -46,41 +46,40 @@ fun SearchScreen(
     val bookmarkIds = searchViewModel.bookmarkIds.collectAsStateWithLifecycle().value
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = "검색 결과",
-            modifier = Modifier.padding(16.dp)
-        )
-
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3), // 한 줄에 3개씩 표시
-            contentPadding = PaddingValues(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()
-        ) {
-            // 페이징 아이템 리스트 출력
-            items(pagedItems.itemCount) { index ->
-                val item = pagedItems[index]
-                if (item != null) {
-                    SearchResultItem(
-                        item = item,
-                        isBookmarked = bookmarkIds.contains(item.thumbnail),
-                        onBookmarkClick = {
-                            searchViewModel.toggleBookmark(item)
-                        }
-                    )
-                }
+        if (pagedItems.itemCount == 0) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "검색된 항목이 없습니다.")
             }
-
-            // 하단 로딩 상태 처리 (추가 데이터 로딩 중일 때)
-            pagedItems.apply {
-                when {
-                    loadState.append is LoadState.Loading -> {
-                        item { LoadingIndicator() }
+        } else {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                contentPadding = PaddingValues(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(pagedItems.itemCount) { index ->
+                    val item = pagedItems[index]
+                    if (item != null) {
+                        SearchResultItem(
+                            item = item,
+                            isBookmarked = bookmarkIds.contains(item.thumbnail),
+                            onBookmarkClick = {
+                                searchViewModel.toggleBookmark(item)
+                            }
+                        )
                     }
+                }
 
-                    loadState.refresh is LoadState.Loading -> {
-                        // 첫 로딩 시 화면 전체 중앙 로딩은 외부에서 처리하거나 여기서 item으로 처리
+                pagedItems.apply {
+                    when {
+                        loadState.append is LoadState.Loading -> {
+                            item { LoadingIndicator() }
+                        }
+
+                        loadState.refresh is LoadState.Loading -> {
+
+                        }
                     }
                 }
             }

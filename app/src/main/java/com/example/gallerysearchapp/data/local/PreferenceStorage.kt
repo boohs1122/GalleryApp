@@ -14,7 +14,7 @@ class PreferenceStorage @Inject constructor(
     @ApplicationContext context: Context,
     private val gson: Gson,
 ) {
-    private val prefs = context.getSharedPreferences("favorites_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("gallery_prefs", Context.MODE_PRIVATE)
 
     fun getBookmarks(): List<ImageData> {
         val json = prefs.getString(KEY_BOOKMARK, null) ?: return emptyList()
