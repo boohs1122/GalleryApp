@@ -68,3 +68,7 @@ class SearchViewModel @Inject constructor(
         preferenceStorage.saveBookmarks(currentList)
     }
 }
+
+sealed class SearchUiEvent {
+    data class OnToggleBookmark(val item: ImageData) : SearchUiEvent()
+}

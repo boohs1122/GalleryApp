@@ -15,10 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.gallerysearchapp.viewmodel.BookmarkViewModel
+import com.example.gallerysearchapp.viewmodel.SearchUiEvent
 
 @Composable
 fun BookmarkScreen(
     bookmarkViewModel: BookmarkViewModel,
+    event: (SearchUiEvent) -> Unit
 ) {
     val bookmarkItems = bookmarkViewModel.bookmarkPagingData.collectAsLazyPagingItems()
     val bookmarkIds = bookmarkViewModel.bookmarkIds.collectAsStateWithLifecycle().value
@@ -42,9 +44,7 @@ fun BookmarkScreen(
                         SearchResultItem(
                             item = item,
                             isBookmarked = bookmarkIds.contains(item.thumbnail),
-                            onBookmarkClick = {
-                                bookmarkViewModel.toggleBookmark(item)
-                            }
+                            event = event
                         )
                     }
                 }

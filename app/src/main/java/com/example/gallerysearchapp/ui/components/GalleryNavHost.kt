@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import com.example.gallerysearchapp.ui.screen.BookmarkScreen
 import com.example.gallerysearchapp.ui.screen.SearchScreen
 import com.example.gallerysearchapp.viewmodel.BookmarkViewModel
+import com.example.gallerysearchapp.viewmodel.SearchUiEvent
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector) {
@@ -32,10 +33,28 @@ fun GalleryNavHost(
         modifier = modifier
     ) {
         composable(Screen.Search.route) {
-            SearchScreen(searchViewModel)
+            SearchScreen(
+                searchViewModel,
+                event = { event ->
+                    when (event) {
+                        is SearchUiEvent.OnToggleBookmark -> {
+                            searchViewModel.toggleBookmark(event.item)
+                        }
+                    }
+                }
+            )
         }
         composable(Screen.Bookmark.route) {
-            BookmarkScreen(bookmarkViewModel)
+            BookmarkScreen(
+                bookmarkViewModel,
+                event = { event ->
+                    when (event) {
+                        is SearchUiEvent.OnToggleBookmark -> {
+                            bookmarkViewModel.toggleBookmark(event.item)
+                        }
+                    }
+                }
+            )
         }
     }
 }

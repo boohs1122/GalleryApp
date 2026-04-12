@@ -36,11 +36,13 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gallerysearchapp.ui.model.ImageData
 import com.example.gallerysearchapp.ui.model.SearchType
+import com.example.gallerysearchapp.viewmodel.SearchUiEvent
 import com.example.gallerysearchapp.viewmodel.SearchViewModel
 
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel,
+    event: (SearchUiEvent) -> Unit
 ) {
     val pagedItems = searchViewModel.searchResults.collectAsLazyPagingItems()
     val bookmarkIds = searchViewModel.bookmarkIds.collectAsStateWithLifecycle().value
@@ -64,9 +66,7 @@ fun SearchScreen(
                         SearchResultItem(
                             item = item,
                             isBookmarked = bookmarkIds.contains(item.thumbnail),
-                            onBookmarkClick = {
-                                searchViewModel.toggleBookmark(item)
-                            }
+                            event = event
                         )
                     }
                 }
@@ -91,7 +91,7 @@ fun SearchScreen(
 fun SearchResultItem(
     item: ImageData,
     isBookmarked: Boolean,
-    onBookmarkClick: () -> Unit,
+    event: (SearchUiEvent) -> Unit,
 ) {
     Card(
         modifier = Modifier
@@ -113,7 +113,7 @@ fun SearchResultItem(
             )
 
             IconButton(
-                onClick = onBookmarkClick,
+                onClick = {event(SearchUiEvent.OnToggleBookmark(item))},
                 modifier = Modifier
                     .align(Alignment.TopEnd) // 좌측 상단 배치
                     .padding(4.dp)
