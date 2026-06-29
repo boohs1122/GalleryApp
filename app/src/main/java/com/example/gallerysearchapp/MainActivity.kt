@@ -1,19 +1,25 @@
 package com.example.gallerysearchapp
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -43,15 +49,14 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GallerySearchAppTheme {
-                val context = LocalContext.current
+                val snackbarHostState = remember { SnackbarHostState() }
                 LaunchedEffect(Unit) {
                     connectivityObserver.isOnline.collectLatest { isOnline ->
                         if (!isOnline) {
-                            Toast.makeText(
-                                context,
-                                "네트워크가 차단되었습니다",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            snackbarHostState.showSnackbar(
+                                message = "네트워크가 차단되었습니다",
+                                duration = SnackbarDuration.Long
+                            )
                         }
                     }
                 }
@@ -59,22 +64,30 @@ class MainActivity : ComponentActivity() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                Scaffold(
-                    topBar = {
-                        GalleryTopBar(
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Scaffold(
+                        topBar = {
+                            GalleryTopBar(
+                                navController = navController,
+                                currentRoute = currentRoute,
+                                onSearch = { query ->
+                                    searchViewModel.fetchData(query)
+                                }
+                            )
+                        }
+                    ) { innerPadding ->
+                        GalleryNavHost(
                             navController = navController,
-                            currentRoute = currentRoute,
-                            onSearch = { query ->
-                                searchViewModel.fetchData(query)
-                            }
+                            searchViewModel = searchViewModel,
+                            bookmarkViewModel = bookmarkViewModel,
+                            modifier = Modifier.padding(innerPadding)
                         )
                     }
-                ) { innerPadding ->
-                    GalleryNavHost(
-                        navController = navController,
-                        searchViewModel = searchViewModel,
-                        bookmarkViewModel = bookmarkViewModel,
-                        modifier = Modifier.padding(innerPadding)
+                    SnackbarHost(
+                        hostState = snackbarHostState,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .statusBarsPadding()
                     )
                 }
             }
