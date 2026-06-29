@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +8,15 @@ plugins {
     alias(libs.plugins.dagger.hilt.android)
     alias(libs.plugins.kapt)
 }
+
+// local.properties에서 Kakao API 키를 읽어온다. (local.properties는 VCS에 포함되지 않음)
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) {
+        localFile.inputStream().use { load(it) }
+    }
+}
+val kakaoApiKey: String = localProperties.getProperty("KAKAO_API_KEY") ?: ""
 
 android {
     namespace = "com.example.gallerysearchapp"
@@ -22,20 +32,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
+        buildConfigField("String", "KAKAO_API_KEY", "\"$kakaoApiKey\"")
     }
 
     buildTypes {
-        debug {
-            buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
-            buildConfigField("String", "KAKAO_API_KEY", "\"KakaoAK d1ec73cac012d686a068b03f19ed9d3d\"")
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-
-            buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
-            buildConfigField("String", "KAKAO_API_KEY", "\"KakaoAK d1ec73cac012d686a068b03f19ed9d3d\"")
-
         }
     }
     compileOptions {
