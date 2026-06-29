@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NetworkConnectivityObserver @Inject constructor(
     private val connectivityManager: ConnectivityManager,
 ) {
@@ -28,7 +30,7 @@ class NetworkConnectivityObserver @Inject constructor(
             }
         }
 
-        // 현재 연결 상태로 초기값 방출 (앱 시작 시 이미 오프라인인 경우 대응)
+        // 현재 연결 상태로 초기값 방출 (수집 시작 시 이미 오프라인인 경우 대응)
         trySend(currentlyOnline())
 
         connectivityManager.registerDefaultNetworkCallback(callback)
