@@ -22,7 +22,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
-                    .addHeader("Authorization", BuildConfig.KAKAO_API_KEY)
+                    .addHeader("Authorization", BuildConfig.SEARCH_API_KEY)
                     .build()
                 chain.proceed(request)
             }
@@ -36,7 +36,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(BuildConfig.KAKAO_BASE_URL)
+            .baseUrl(BuildConfig.SEARCH_BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

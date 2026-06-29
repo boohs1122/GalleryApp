@@ -9,14 +9,14 @@ plugins {
     alias(libs.plugins.kapt)
 }
 
-// local.properties에서 Kakao API 키를 읽어온다. (local.properties는 VCS에 포함되지 않음)
+// local.properties에서 검색 API 키를 읽어온다. (local.properties는 VCS에 포함되지 않음)
 val localProperties = Properties().apply {
     val localFile = rootProject.file("local.properties")
     if (localFile.exists()) {
         localFile.inputStream().use { load(it) }
     }
 }
-val kakaoApiKey: String = localProperties.getProperty("KAKAO_API_KEY") ?: ""
+val searchApiKey: String = localProperties.getProperty("SEARCH_API_KEY") ?: ""
 
 android {
     namespace = "com.example.gallerysearchapp"
@@ -33,8 +33,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "KAKAO_BASE_URL", "\"https://dapi.kakao.com/\"")
-        buildConfigField("String", "KAKAO_API_KEY", "\"$kakaoApiKey\"")
+        buildConfigField("String", "SEARCH_BASE_URL", "\"https://dapi.kakao.com/\"")
+        buildConfigField("String", "SEARCH_API_KEY", "\"$searchApiKey\"")
     }
 
     buildTypes {

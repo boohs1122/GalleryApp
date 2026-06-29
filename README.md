@@ -1,6 +1,6 @@
 # 📷 GalleryApp — 이미지·동영상 검색 갤러리
 
-> Kakao 검색 API를 활용해 이미지와 동영상을 한 번에 검색하고, 마음에 드는 항목을 보관함에 저장할 수 있는 안드로이드 앱입니다.
+> 검색 API를 활용해 이미지와 동영상을 한 번에 검색하고, 마음에 드는 항목을 보관함에 저장할 수 있는 안드로이드 앱입니다.
 > **Jetpack Compose · MVVM · Hilt · Paging 3 · Coroutine/Flow** 기반으로, 최신 안드로이드 개발 스택을 적용해 구현했습니다.
 
 ![Kotlin](https://img.shields.io/badge/Kotlin-2.2.0-7F52FF?logo=kotlin&logoColor=white)
@@ -53,7 +53,7 @@
 | DI | Hilt 2.56 | 의존성 주입, 모듈 단위 구성 |
 | Async | Coroutine / Flow | 비동기 처리, 상태 스트림 관리 |
 | Paging | Paging 3 | 검색 결과 점진적 로딩 |
-| Network | Retrofit 2.11 + OkHttp 4.12 | Kakao 검색 REST API 통신 |
+| Network | Retrofit 2.11 + OkHttp 4.12 | 검색 REST API 통신 |
 | Image Loading | Coil 2.7 | 썸네일 비동기 로딩/캐싱 |
 | Local Storage | SharedPreferences + Gson | 보관함 데이터 영속화 |
 | Navigation | Navigation Compose | 화면 간 이동 |
@@ -65,7 +65,7 @@
 MVVM + 단방향 데이터 흐름(UDF)을 기반으로, 관심사를 계층으로 분리했습니다.
 
 ```
-UI (Compose)  ──►  ViewModel  ──►  Repository  ──►  Remote API (Kakao)
+UI (Compose)  ──►  ViewModel  ──►  Repository  ──►  Remote API (검색)
    ▲                  │                                    
    └── State (Flow) ◄─┘                              Local (SharedPreferences)
 ```
@@ -82,7 +82,7 @@ com.example.gallerysearchapp
 ├── GalleryApplication.kt          # @HiltAndroidApp 진입점
 ├── MainActivity.kt                # Scaffold · Navigation · 오프라인 Snackbar
 ├── data
-│   ├── api/SearchService.kt       # Kakao 이미지/동영상 검색 엔드포인트
+│   ├── api/SearchService.kt       # 이미지/동영상 검색 엔드포인트
 │   ├── connectivity/              # NetworkConnectivityObserver (Flow 기반 연결 감지)
 │   ├── di/                        # Hilt 모듈 (Network/Repository/App/Connectivity)
 │   ├── local/PreferenceStorage.kt # 보관함 영속화 (SharedPreferences + Gson)
@@ -127,15 +127,18 @@ val videoDeferred = async { if (isVideoEnd) null else runCatching { apiService.s
 ### 요구 사항
 - Android Studio (AGP 8.13 호환 버전)
 - JDK 17
-- [Kakao Developers](https://developers.kakao.com/)에서 발급받은 **REST API 키**
+- 검색 API의 **REST API 키**
 
 ### 빌드 & 실행
 1. 저장소 클론
    ```bash
    git clone https://github.com/boohs1122/GalleryApp.git
    ```
-2. Kakao REST API 키 설정 — `app/build.gradle.kts`의 `buildConfigField "KAKAO_API_KEY"` 값에 발급받은 키(`KakaoAK {REST_API_KEY}`)를 입력
-   > 🔐 보안을 위해 키는 `local.properties`나 환경 변수로 분리해 관리하는 것을 권장합니다.
+2. API 키 설정 — 프로젝트 루트의 `local.properties`에 발급받은 REST API 키를 추가
+   ```properties
+   SEARCH_API_KEY=발급받은_REST_API_키
+   ```
+   > 🔐 `local.properties`는 VCS에 포함되지 않으며, 빌드 시 `BuildConfig`로 주입됩니다.
 3. Android Studio에서 열고 `Run ▶` 또는
    ```bash
    ./gradlew :app:installDebug
