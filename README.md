@@ -19,9 +19,9 @@
 
 <p align="center"><sub>키워드 검색 → 이미지·동영상 결과 → 보관함 저장/확인 플로우</sub></p>
 
-| 검색 | 보관함 |
-| :---: | :---: |
-| <img src="docs/screenshots/search.png" width="240"/> | <img src="docs/screenshots/bookmark.png" width="240"/> |
+| 검색 | 보관함 | 오프라인 알림 |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/search.png" width="220"/> | <img src="docs/screenshots/bookmark.png" width="220"/> | <img src="docs/screenshots/offline.png" width="220"/> |
 
 <br>
 
