@@ -11,13 +11,17 @@
 
 <br>
 
-## 📸 스크린샷
+## 📸 데모
 
-| 검색 화면 | 보관함 화면 | 오프라인 알림 |
-| :---: | :---: | :---: |
-| <img src="docs/screenshots/search.png" width="240"/> | <img src="docs/screenshots/bookmark.png" width="240"/> | <img src="docs/screenshots/offline.gif" width="240"/> |
+<p align="center">
+  <img src="docs/screenshots/demo.gif" width="280" alt="앱 데모: 검색 → 결과 → 보관함"/>
+</p>
 
-> 위 경로(`docs/screenshots/`)에 `search.png`, `bookmark.png`, `offline.gif` 파일을 추가하면 자동으로 표시됩니다.
+<p align="center"><sub>키워드 검색 → 이미지·동영상 결과 → 보관함 저장/확인 플로우</sub></p>
+
+| 검색 | 보관함 |
+| :---: | :---: |
+| <img src="docs/screenshots/search.png" width="240"/> | <img src="docs/screenshots/bookmark.png" width="240"/> |
 
 <br>
 
