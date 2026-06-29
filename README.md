@@ -15,9 +15,9 @@
 
 | 검색 화면 | 보관함 화면 | 오프라인 알림 |
 | :---: | :---: | :---: |
-| _이미지 추가 예정_ | _이미지 추가 예정_ | _이미지 추가 예정_ |
+| <img src="docs/screenshots/search.png" width="240"/> | <img src="docs/screenshots/bookmark.png" width="240"/> | <img src="docs/screenshots/offline.gif" width="240"/> |
 
-> 실행 화면(GIF/스크린샷)을 `docs/screenshots/`에 추가한 뒤 위 표의 경로를 연결하면 됩니다.
+> 위 경로(`docs/screenshots/`)에 `search.png`, `bookmark.png`, `offline.gif` 파일을 추가하면 자동으로 표시됩니다.
 
 <br>
 
